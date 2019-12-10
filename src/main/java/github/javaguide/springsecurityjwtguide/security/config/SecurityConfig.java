@@ -6,6 +6,7 @@ import github.javaguide.springsecurityjwtguide.security.filter.JWTAuthentication
 import github.javaguide.springsecurityjwtguide.security.filter.JWTAuthorizationFilter;
 import github.javaguide.springsecurityjwtguide.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,7 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsServiceImpl;
+    private UserDetailsService userDetailsService;
 
     /**
      * 密码编码器
@@ -38,13 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService createUserDetailsService() {
-        return userDetailsServiceImpl;
+        return userDetailsService;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 设置自定义的userDetailsService以及密码编码器
-        auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 
     @Override
